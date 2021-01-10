@@ -112,8 +112,6 @@ class Field {
     static generateField(size = 4) {
         const characterArray = ['░', 'O'];
         const percent = 0.33;
-        const hat = '^';
-        const pathCharacter = '*';
         const field = [];
         for (let i = 0; i < size; i++) {
             let row = [];
