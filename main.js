@@ -13,6 +13,13 @@ class Field {
         this.playing = true;
         this.length = this.field.length;
     }
+
+    static instructions() {
+        console.log('Welcome to Find the Hat!');
+        console.log('Your character is a * and here are the instructions to control it.');
+        console.log('Enter r to go right, l to go left, d to do down and u to go up.');
+    }
+
     print() {
         for (let value of this.field) {
             value = value.join('');
@@ -20,11 +27,27 @@ class Field {
         }
     }
     moveChecker() {
-        if ((this.currentX < 0) || (this.currentY < 0) || (this.currentX >= this.length) || (this.currentY >= this.length)) {
+        if ((this.currentX < 0) || (this.currentY < 0) || (this.currentX > this.length) || (this.currentY > this.length)) {
             this.playing = false;
             console.log('Moved outside field. Start again!');
             return false;
         }
+        return true;
+    }
+
+    victory() {
+        console.log('');
+        console.log('You found the hat! You won!');
+        this.field[this.currentX][this.currentY] = '*';
+        this.playing = false;
+        this.print();
+    }
+
+    defeat() {
+        console.log('');
+        console.log('You fell into a hole');
+        this.playing = false;
+        this.print();
     }
     move(direction) {
         if (direction == 'r') {
@@ -33,15 +56,13 @@ class Field {
                 return;
             }
             if (this.field[this.currentX][this.currentY] === '░') {
+                this.field[this.currentX][this.currentY - 1] = '░';
                 this.field[this.currentX][this.currentY] = '*';
             } else if (this.field[this.currentX][this.currentY] === 'O') {
-                console.log('You fell into a hole');
-                this.playing = false;
-                this.print();
+                this.defeat();
             } else if (this.field[this.currentX][this.currentY] === '^') {
-                console.log('You found the hat! You won!');
-                this.playing = false;
-                this.print();
+                this.field[this.currentX][this.currentY - 1] = '░';
+                this.victory();
             }
         } else if (direction == 'l') {
             this.currentY -= 1;
@@ -49,15 +70,13 @@ class Field {
                 return;
             }
             if (this.field[this.currentX][this.currentY] === '░') {
+                this.field[this.currentX][this.currentY + 1] = '░';
                 this.field[this.currentX][this.currentY] = '*';
             } else if (this.field[this.currentX][this.currentY] === 'O') {
-                console.log('You fell into a hole');
-                this.playing = false;
-                this.print();
+                this.defeat();
             } else if (this.field[this.currentX][this.currentY] === '^') {
-                console.log('You found the hat! You won!');
-                this.playing = false;
-                this.print();
+                this.field[this.currentX][this.currentY + 1] = '░';
+                this.victory();
             }
         } else if (direction == 'd') {
             this.currentX += 1;
@@ -65,15 +84,13 @@ class Field {
                 return;
             }
             if (this.field[this.currentX][this.currentY] === '░') {
+                this.field[this.currentX - 1][this.currentY] = '░';
                 this.field[this.currentX][this.currentY] = '*';
             } else if (this.field[this.currentX][this.currentY] === 'O') {
-                console.log('You fell into a hole');
-                this.playing = false;
-                this.print();
+                this.defeat();
             } else if (this.field[this.currentX][this.currentY] === '^') {
-                console.log('You found the hat! You won!');
-                this.print();
-                this.playing = false;
+                this.field[this.currentX - 1][this.currentY] = '░';
+                this.victory();
             }
         } else if (direction == 'u') {
             this.currentX -= 1;
@@ -81,15 +98,13 @@ class Field {
                 return;
             }
             if (this.field[this.currentX][this.currentY] === '░') {
+                this.field[this.currentX + 1][this.currentY] = '░';
                 this.field[this.currentX][this.currentY] = '*';
             } else if (this.field[this.currentX][this.currentY] === 'O') {
-                console.log('You fell into a hole');
-                this.playing = false;
-                this.print();
+                this.defeat();
             } else if (this.field[this.currentX][this.currentY] === '^') {
-                console.log('You found the hat! You won!');
-                this.playing = false;
-                this.print();
+                this.field[this.currentX][this.currentY + 1] = '░';
+                this.victory();
             }
         }
     }
@@ -128,15 +143,21 @@ const myField = new Field([
 ]);
 
 
-// console.log(Field.generateField().join(''));
-let field = Field.generateField(5);
-for (let value of field) {
-    value = value.join('');
-    console.log(value);
-}
-
-
 function play() {
+    Field.instructions();
+    myField.print();
+    console.log('This is the current field. Would you like to change it?');
+    randomField = prompt('Enter 1 to change and 0 to play the default: =>');
+    if (randomField === '1') {
+        console.log('Default size of the field is 4.');
+        size = parseInt(prompt('Enter the size of the square field which should be more than 0 and less than 6: =>'))
+        while ((size > 6) || (size < 0)) {
+            size = prompt('Enter the size of the square field which should be more than 0 and less than 6: =>')
+        }
+        myField.field = Field.generateField(size)
+    }
+    console.log('Alright! We\'re ready to play!');
+    console.log('')
     let direction = true;
     while (direction && (direction !== "exit") && (myField.playing)) {
         myField.print();
@@ -144,3 +165,4 @@ function play() {
         myField.move(direction);
     }
 }
+play();
