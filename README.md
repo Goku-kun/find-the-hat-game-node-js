@@ -20,6 +20,10 @@ This repository consists of a game made using node.js
 
 ---
 
+### Output
+
+![Output](./resources/images/output-1.png)
+
 ## Project status
 
 This initial version of the project has been `completed`.
